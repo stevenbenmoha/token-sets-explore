@@ -29,7 +29,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 
-const SetList = ({setList}: { setList: DisplaySet[] }) => {
+const SetList = ({setList}: { setList: DisplaySet }) => {
 
     const [expanded, setExpanded] = React.useState(false);
 
@@ -39,32 +39,20 @@ const SetList = ({setList}: { setList: DisplaySet[] }) => {
 
     return (
         <div>
-            <h1 className="graphik-font page-title">Explore Token Sets</h1>
-            <Box sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                '& > :not(style)': {
-                    m: 3,
-                    width: 400
-                },
-                justifyContent: 'center'
-            }}>
-                <br/>
-                {setList.map((set, index) =>
-                    <Card className="rounded-border" elevation={12}>
+            <Card className="rounded-border" elevation={12}>
                         <CardContent className="unified-style card-header">
                             <div className="card-title">
-                                {set.name} - ${set.symbol}
+                                {setList.name} - ${setList.symbol}
                             </div>
                             <div className="address">
                                 Address:
                             </div>
                             <div className="address">
-                                <a href={'https://etherscan.io/address/' + set.address}>{set.address}</a>
+                                <a href={'https://etherscan.io/address/' + setList.address}>{setList.address}</a>
                             </div>
                         </CardContent>
                         <CardActions disableSpacing>
-                            <ExpandMore
+                            <ExpandMore className="expand-button"
                                 expand={expanded}
                                 onClick={handleExpandClick}
                                 aria-expanded={expanded}
@@ -77,7 +65,7 @@ const SetList = ({setList}: { setList: DisplaySet[] }) => {
                                 <div className="positions-header">
                                     Positions:
                                 </div>
-                                {set.currentPositions.map((position, index) =>
+                                {setList.currentPositions.map((position, index) =>
                                     <div className="positions"><a href={'https://etherscan.io/address/' + position.address}><img
                                         src={position.logoURI}
                                         alt="logo"
@@ -86,8 +74,6 @@ const SetList = ({setList}: { setList: DisplaySet[] }) => {
                             </CardContent>
                         </Collapse>
                     </Card>
-                )}
-            </Box>
         </div>
     )
 };

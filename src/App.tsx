@@ -19,6 +19,7 @@ import {defiPulseAddress, layerTwoAddress, metaverseAddress} from "./constants/t
 import {DisplaySet, Position} from "./classes/DisplaySet";
 import SetList from "./components/SetList";
 import tokenList from "./constants/ethereum.tokenlist.json"
+import { Box } from '@mui/material';
 
 const Web3 = require('web3');
 
@@ -37,9 +38,31 @@ class App extends Component {
     }
 
     render() {
-        return (
-            <SetList setList={this.state.setList}/>
-        );
+        if (this.showSets) {
+            return (
+                <div>
+                    <h1 className="graphik-font page-title">Explore Token Sets</h1>
+                    <Box sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        '& > :not(style)': {
+                            m: 3,
+                            width: 400
+                        },
+                        justifyContent: 'center'
+                    }}>
+                        <br/>
+                        <SetList setList={new DisplaySet(this.displayedSets[0].name, this.displayedSets[0].symbol, this.displayedSets[0].address, this.displayedSets[0].currentPositions)}/>
+                        <SetList setList={new DisplaySet(this.displayedSets[1].name, this.displayedSets[1].symbol, this.displayedSets[1].address, this.displayedSets[1].currentPositions)}/>
+                        <SetList setList={new DisplaySet(this.displayedSets[2].name, this.displayedSets[2].symbol, this.displayedSets[2].address, this.displayedSets[2].currentPositions)}/>
+                    </Box>
+                </div>
+            );
+        } else {
+            return (
+                <div> Loading ... </div>
+            );
+        }
     }
 
     async componentDidMount() {
@@ -83,7 +106,9 @@ class App extends Component {
     }
 
     private async setChildState() {
-        this.setState({setList: this.displayedSets});
+        await this.setState({setList: this.displayedSets});
+        this.showSets = true;
+        await this.forceUpdate();
     }
 
     private async fetchSetDetails(setAddress: string, callerAddress: string): Promise<any> {
