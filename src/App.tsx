@@ -19,7 +19,7 @@ import {defiPulseAddress, layerTwoAddress, metaverseAddress} from "./constants/t
 import {DisplaySet, Position} from "./classes/DisplaySet";
 import SetList from "./components/SetList";
 import tokenList from "./constants/ethereum.tokenlist.json"
-import { Box } from '@mui/material';
+import {Box, Card, CardContent} from '@mui/material';
 
 const Web3 = require('web3');
 
@@ -41,7 +41,11 @@ class App extends Component {
         if (this.showSets) {
             return (
                 <div>
-                    <h1 className="graphik-font page-title">Explore Token Sets</h1>
+                    <Card className="rounded-border card" elevation={20}>
+                        <CardContent className="unified-style card-header">
+                            <img src="https://www.tokensets.com/static/media/set-and-tokensets-logo.872a2884.svg" className="graphik-font page-title"/>
+                        </CardContent>
+                    </Card>
                     <Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',

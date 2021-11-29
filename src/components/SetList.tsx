@@ -1,5 +1,4 @@
 import {
-    Box,
     Card,
     CardActions,
     CardContent,
@@ -48,7 +47,7 @@ const SetList = ({setList}: { setList: DisplaySet }) => {
                                 Address:
                             </div>
                             <div className="address">
-                                <a href={'https://etherscan.io/address/' + setList.address}>{setList.address}</a>
+                                <a target="_blank" rel="noreferrer" href={'https://etherscan.io/address/' + setList.address}>{setList.address}</a>
                             </div>
                         </CardContent>
                         <CardActions disableSpacing>
@@ -66,7 +65,7 @@ const SetList = ({setList}: { setList: DisplaySet }) => {
                                     Positions:
                                 </div>
                                 {setList.currentPositions.map((position, index) =>
-                                    <div className="positions"><a href={'https://etherscan.io/address/' + position.address}><img
+                                    <div className="positions"><a target="_blank" rel="noreferrer" href={'https://etherscan.io/address/' + position.address}><img
                                         src={position.logoURI}
                                         alt="logo"
                                     /><span className="position-name">{position.name}</span></a></div>
