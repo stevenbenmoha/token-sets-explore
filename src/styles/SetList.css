@@ -36,6 +36,11 @@
     margin-left: 8%;
 }
 
+.logo-header {
+    margin-right: 5%;
+    margin-left: 6%;
+}
+
 .card {
     margin-left: auto;
     margin-right: auto;
@@ -52,7 +57,7 @@
 .select-dropdown {
     margin-top: 1%;
     margin-bottom: -8%;
-    margin-left: 15%;
+    margin-left: 25%;
 }
 
 .network-font {
