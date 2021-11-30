@@ -3,23 +3,23 @@
 import React, {Component} from 'react';
 import Set from "set.js";
 import {
-    basicIssuanceModuleAddress,
-    controllerAddress,
-    debtIssuanceModuleAddress,
-    governanceModuleAddress,
-    masterOracleAddress,
-    navIssuanceModuleAddress,
-    protocolViewerAddress,
-    setTokenCreatorAddress,
-    streamingFeeModuleAddress,
-    tradeModuleAddress
+    basicIssuanceModuleAddress, basicIssuanceModuleAddressTest,
+    controllerAddress, controllerAddressTest,
+    debtIssuanceModuleAddress, debtIssuanceModuleAddressTest, debtIssuanceModuleV2AddressTest,
+    governanceModuleAddress, governanceModuleAddressTest,
+    masterOracleAddress, masterOracleAddressTest,
+    navIssuanceModuleAddress, navIssuanceModuleAddressTest,
+    protocolViewerAddress, protocolViewerAddressTest,
+    setTokenCreatorAddress, setTokenCreatorAddressTest,
+    streamingFeeModuleAddress, streamingFeeModuleAddressTest,
+    tradeModuleAddress, tradeModuleAddressTest
 } from "./constants/ethContractAddresses";
 import {infuraMainnetUrl} from "./constants/web3Providers";
 import {defiPulseAddress, layerTwoAddress, metaverseAddress} from "./constants/tokens";
 import {DisplaySet, Position} from "./classes/DisplaySet";
 import SetList from "./components/SetList";
 import tokenList from "./constants/ethereum.tokenlist.json"
-import {Box, Card, CardContent} from '@mui/material';
+import {Box, Card, CardContent, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material';
 
 const Web3 = require('web3');
 
@@ -28,6 +28,7 @@ class App extends Component {
     web3: any;
     mainConfig: any;
     setToken: any;
+    networkSelection = 'Mainnet';
     myAddress = '0xA817fDf9b769D2E74D12e8e28294eFa2c331B799';
     tokenSets = [defiPulseAddress, metaverseAddress, layerTwoAddress];
     displayedSets: DisplaySet[] = [];
@@ -41,11 +42,30 @@ class App extends Component {
         if (this.showSets) {
             return (
                 <div>
+                    <div>
                     <Card className="rounded-border card" elevation={20}>
                         <CardContent className="unified-style card-header">
-                            <img src="https://www.tokensets.com/static/media/set-and-tokensets-logo.872a2884.svg" className="graphik-font page-title"/>
+                            <img src="https://www.tokensets.com/static/media/set-and-tokensets-logo.872a2884.svg"
+                                 className="graphik-font page-title"/>
+                            <Card className="rounded-border selector" elevation={4}>
+                                <CardContent className="unified-style card-header">
+                                    <FormControl fullWidth>
+                                        <Select className="select-dropdown network-font"
+                                                variant="standard"
+                                                disableUnderline={true}
+                                                defaultValue={this.networkSelection}
+                                                name="networkSelection"
+                                                onChange={e => this.handleChange(e)}
+                                        >
+                                            <MenuItem value={"Mainnet"}>Mainnet</MenuItem>
+                                            <MenuItem value={"Kovan"}>Kovan</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </CardContent>
+                            </Card>
                         </CardContent>
                     </Card>
+                    </div>
                     <Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -56,9 +76,12 @@ class App extends Component {
                         justifyContent: 'center'
                     }}>
                         <br/>
-                        <SetList setList={new DisplaySet(this.displayedSets[0].name, this.displayedSets[0].symbol, this.displayedSets[0].address, this.displayedSets[0].currentPositions)}/>
-                        <SetList setList={new DisplaySet(this.displayedSets[1].name, this.displayedSets[1].symbol, this.displayedSets[1].address, this.displayedSets[1].currentPositions)}/>
-                        <SetList setList={new DisplaySet(this.displayedSets[2].name, this.displayedSets[2].symbol, this.displayedSets[2].address, this.displayedSets[2].currentPositions)}/>
+                        <SetList
+                            setList={new DisplaySet(this.displayedSets[0].name, this.displayedSets[0].symbol, this.displayedSets[0].address, this.displayedSets[0].currentPositions)}/>
+                        <SetList
+                            setList={new DisplaySet(this.displayedSets[1].name, this.displayedSets[1].symbol, this.displayedSets[1].address, this.displayedSets[1].currentPositions)}/>
+                        <SetList
+                            setList={new DisplaySet(this.displayedSets[2].name, this.displayedSets[2].symbol, this.displayedSets[2].address, this.displayedSets[2].currentPositions)}/>
                     </Box>
                 </div>
             );
@@ -75,21 +98,45 @@ class App extends Component {
         await this.setChildState();
     }
 
+    private handleChange(event: SelectChangeEvent) {
+        this.networkSelection = event.target.value as string;
+        console.log('selection', this.networkSelection);
+        this.showSets = false;
+        this.componentDidMount();
+    }
+
     private async instantiateSetToken() {
         this.web3 = new Web3(infuraMainnetUrl);
-        this.mainConfig = {
-            web3Provider: this.web3.currentProvider,
-            basicIssuanceModuleAddress: basicIssuanceModuleAddress,
-            controllerAddress: controllerAddress,
-            masterOracleAddress: masterOracleAddress,
-            navIssuanceModuleAddress: navIssuanceModuleAddress,
-            protocolViewerAddress: protocolViewerAddress,
-            setTokenCreatorAddress: setTokenCreatorAddress,
-            streamingFeeModuleAddress: streamingFeeModuleAddress,
-            tradeModuleAddress: tradeModuleAddress,
-            debtIssuanceModuleAddress: debtIssuanceModuleAddress,
-            debtIssuanceModuleV2Address: debtIssuanceModuleAddress,
-            governanceModuleAddress: governanceModuleAddress
+        if (this.networkSelection === "Mainnet") {
+            this.mainConfig = {
+                web3Provider: this.web3.currentProvider,
+                basicIssuanceModuleAddress: basicIssuanceModuleAddress,
+                controllerAddress: controllerAddress,
+                masterOracleAddress: masterOracleAddress,
+                navIssuanceModuleAddress: navIssuanceModuleAddress,
+                protocolViewerAddress: protocolViewerAddress,
+                setTokenCreatorAddress: setTokenCreatorAddress,
+                streamingFeeModuleAddress: streamingFeeModuleAddress,
+                tradeModuleAddress: tradeModuleAddress,
+                debtIssuanceModuleAddress: debtIssuanceModuleAddress,
+                debtIssuanceModuleV2Address: debtIssuanceModuleAddress,
+                governanceModuleAddress: governanceModuleAddress
+            }
+        } else {
+            this.mainConfig = {
+                web3Provider: this.web3.currentProvider,
+                basicIssuanceModuleAddress: basicIssuanceModuleAddressTest,
+                controllerAddress: controllerAddressTest,
+                masterOracleAddress: masterOracleAddressTest,
+                navIssuanceModuleAddress: navIssuanceModuleAddressTest,
+                protocolViewerAddress: protocolViewerAddressTest,
+                setTokenCreatorAddress: setTokenCreatorAddressTest,
+                streamingFeeModuleAddress: streamingFeeModuleAddressTest,
+                tradeModuleAddress: tradeModuleAddressTest,
+                debtIssuanceModuleAddress: debtIssuanceModuleAddressTest,
+                debtIssuanceModuleV2Address: debtIssuanceModuleV2AddressTest,
+                governanceModuleAddress: governanceModuleAddressTest
+            }
         }
         this.setToken = new Set(this.mainConfig).setToken;
     }
@@ -118,6 +165,7 @@ class App extends Component {
     private async fetchSetDetails(setAddress: string, callerAddress: string): Promise<any> {
         if (this.setToken) {
             const modules = await this.setToken.getModulesAsync(setAddress, callerAddress);
+
             return await this.setToken.fetchSetDetailsAsync(setAddress, modules, callerAddress);
         }
     }

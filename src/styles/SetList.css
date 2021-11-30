@@ -39,10 +39,24 @@
 .card {
     margin-left: auto;
     margin-right: auto;
-    width: 13%;
-    max-width: 20%;
-    margin-top: 2%;
-    margin-bottom: 2%;
+    max-width: 13%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.selector {
+    margin-top: 15%;
+    background: linear-gradient(90deg, #2D2CE5, #6BB1FF);
+}
+
+.select-dropdown {
+    margin-top: 1%;
+    margin-bottom: -8%;
+    margin-left: 15%;
+}
+
+.network-font {
+    color: white !important;
 }
 
 .address {
