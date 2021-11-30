@@ -19,7 +19,16 @@ import {defiPulseAddress, layerTwoAddress, metaverseAddress} from "./constants/t
 import {DisplaySet, Position} from "./classes/DisplaySet";
 import SetList from "./components/SetList";
 import tokenList from "./constants/ethereum.tokenlist.json"
-import {Box, Card, CardContent, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    CircularProgress,
+    FormControl,
+    MenuItem,
+    Select,
+    SelectChangeEvent
+} from '@mui/material';
 
 const Web3 = require('web3');
 
@@ -87,7 +96,11 @@ class App extends Component {
             );
         } else {
             return (
-                <div> Loading ... </div>
+                <Box sx={{ display: 'flex',
+                justifyContent: 'center',
+                marginTop: 50}}>
+                    <CircularProgress />
+                </Box>
             );
         }
     }
