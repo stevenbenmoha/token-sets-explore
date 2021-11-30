@@ -62,7 +62,8 @@
 .address {
     font-size: 12px;
     margin-bottom: 1%;
-    color: rgba(0, 0, 0, 0.6)
+    color: rgba(0, 0, 0, 0.6);
+    margin-right: 5%;
 }
 
 .page-title {

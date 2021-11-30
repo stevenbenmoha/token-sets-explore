@@ -54,7 +54,7 @@ class App extends Component {
                     <div>
                     <Card className="rounded-border card" elevation={20}>
                         <CardContent className="unified-style card-header">
-                            <img src="https://www.tokensets.com/static/media/set-and-tokensets-logo.872a2884.svg"
+                            <img src="https://www.tokensets.com/static/media/set-and-tokensets-logo.872a2884.svg" alt="logo"
                                  className="graphik-font page-title"/>
                             <Card className="rounded-border selector" elevation={4}>
                                 <CardContent className="unified-style card-header">
