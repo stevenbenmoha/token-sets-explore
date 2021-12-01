@@ -14,7 +14,7 @@ import {
     streamingFeeModuleAddress, streamingFeeModuleAddressTest,
     tradeModuleAddress, tradeModuleAddressTest
 } from "./constants/ethContractAddresses";
-import {infuraMainnetUrl} from "./constants/web3Providers";
+import {infuraKovanUrl, infuraMainnetUrl} from "./constants/web3Providers";
 import {defiPulseAddress, layerTwoAddress, metaverseAddress} from "./constants/tokens";
 import {DisplaySet, Position} from "./classes/DisplaySet";
 import SetList from "./components/SetList";
@@ -36,12 +36,16 @@ class App extends Component {
 
     web3: any;
     mainConfig: any;
+    setObject: any;
     setToken: any;
+    systemAPI: any;
     networkSelection = 'Mainnet';
     myAddress = '0xA817fDf9b769D2E74D12e8e28294eFa2c331B799';
-    tokenSets = [defiPulseAddress, metaverseAddress, layerTwoAddress];
+    defaultTokenSets = [defiPulseAddress, metaverseAddress, layerTwoAddress];
+    tokenSets: any;
     displayedSets: DisplaySet[] = [];
     showSets = false;
+    showErrorMsg = false;
 
     state = {
         setList: this.displayedSets
@@ -85,21 +89,26 @@ class App extends Component {
                         justifyContent: 'center'
                     }}>
                         <br/>
-                        <SetList
-                            setList={new DisplaySet(this.displayedSets[0].name, this.displayedSets[0].symbol, this.displayedSets[0].address, this.displayedSets[0].currentPositions)}/>
-                        <SetList
-                            setList={new DisplaySet(this.displayedSets[1].name, this.displayedSets[1].symbol, this.displayedSets[1].address, this.displayedSets[1].currentPositions)}/>
-                        <SetList
-                            setList={new DisplaySet(this.displayedSets[2].name, this.displayedSets[2].symbol, this.displayedSets[2].address, this.displayedSets[2].currentPositions)}/>
+                        <SetList setList={new DisplaySet(this.displayedSets[0].name, this.displayedSets[0].symbol, this.displayedSets[0].address, this.displayedSets[0].currentPositions)}/>
+                        <SetList setList={new DisplaySet(this.displayedSets[1].name, this.displayedSets[1].symbol, this.displayedSets[1].address, this.displayedSets[1].currentPositions)}/>
+                        <SetList setList={new DisplaySet(this.displayedSets[2].name, this.displayedSets[2].symbol, this.displayedSets[2].address, this.displayedSets[2].currentPositions)}/>
                     </Box>
                 </div>
             );
-        } else {
+        } else if (!this.showSets && !this.showErrorMsg) {
             return (
                 <Box sx={{ display: 'flex',
                 justifyContent: 'center',
                 marginTop: 50}}>
                     <CircularProgress />
+                </Box>
+            );
+        } else {
+            return (
+                <Box sx={{ display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: 50}}>
+                    <p className="error-msg"> Call Failure, Please Refresh And Try Again</p>
                 </Box>
             );
         }
@@ -115,12 +124,15 @@ class App extends Component {
         this.networkSelection = event.target.value as string;
         console.log('selection', this.networkSelection);
         this.showSets = false;
+        this.forceUpdate();
+        this.displayedSets = [];
+        this.tokenSets = [];
         this.componentDidMount();
     }
 
     private async instantiateSetToken() {
-        this.web3 = new Web3(infuraMainnetUrl);
         if (this.networkSelection === "Mainnet") {
+            this.web3 = new Web3(infuraMainnetUrl);
             this.mainConfig = {
                 web3Provider: this.web3.currentProvider,
                 basicIssuanceModuleAddress: basicIssuanceModuleAddress,
@@ -136,6 +148,7 @@ class App extends Component {
                 governanceModuleAddress: governanceModuleAddress
             }
         } else {
+            this.web3 = new Web3(infuraKovanUrl);
             this.mainConfig = {
                 web3Provider: this.web3.currentProvider,
                 basicIssuanceModuleAddress: basicIssuanceModuleAddressTest,
@@ -151,10 +164,22 @@ class App extends Component {
                 governanceModuleAddress: governanceModuleAddressTest
             }
         }
-        this.setToken = new Set(this.mainConfig).setToken;
+        this.setObject = new Set(this.mainConfig);
+        this.setToken = this.setObject.setToken;
+        this.systemAPI = this.setObject.system;
     }
 
     private async mapSetDetailsToDisplaySets() {
+
+        if (this.networkSelection === 'Kovan') {
+            const sets = await this.systemAPI.getSetsAsync(this.myAddress);
+            for (let i = 0; i < 3; i++) {
+                this.tokenSets[i] = sets[i];
+            }
+        } else {
+            this.tokenSets = this.defaultTokenSets;
+        }
+
         for (const set of this.tokenSets) {
 
             await this.fetchSetDetails(set, this.myAddress).then(async res => {
@@ -177,9 +202,14 @@ class App extends Component {
 
     private async fetchSetDetails(setAddress: string, callerAddress: string): Promise<any> {
         if (this.setToken) {
-            const modules = await this.setToken.getModulesAsync(setAddress, callerAddress);
-
-            return await this.setToken.fetchSetDetailsAsync(setAddress, modules, callerAddress);
+            try {
+                const modules = await this.setToken.getModulesAsync(setAddress, callerAddress);
+                return await this.setToken.fetchSetDetailsAsync(setAddress, modules, callerAddress);
+            } catch (e) {
+                this.showErrorMsg = true;
+                this.forceUpdate();
+                throw Error;
+            }
         }
     }
 
@@ -189,15 +219,19 @@ class App extends Component {
 
         // For each address, fetch the name and logo from a hashmap created from json file of coingecko tokens
         for (const address of positions) {
-            const array = tokenList.tokens;
-            const result = new Map<String, String>(array.map(obj => [obj.address.toLowerCase(), obj.name + '^' + obj.logoURI]));
-            let mapEntryPosition = result.get(address.toLowerCase());
+            if (this.networkSelection === 'Mainnet') {
+                const array = tokenList.tokens;
+                const result = new Map<String, String>(array.map(obj => [obj.address.toLowerCase(), obj.name + '^' + obj.logoURI]));
+                let mapEntryPosition = result.get(address.toLowerCase());
 
-            if (mapEntryPosition) {
-                //  To avoid complex multi-value map, both name and logo stored in value. extracted below:
-                const name = mapEntryPosition.split('^')[0];
-                const logoURI = mapEntryPosition.split('^')[1];
-                fullPositionList.push(new Position(name, address.toLowerCase(), logoURI));
+                if (mapEntryPosition) {
+                    //  To avoid complex multi-value map, both name and logo stored in value. extracted below:
+                    const name = mapEntryPosition.split('^')[0];
+                    const logoURI = mapEntryPosition.split('^')[1];
+                    fullPositionList.push(new Position(name, address.toLowerCase(), logoURI));
+                }
+            } else {
+                fullPositionList.push(new Position(address, address.toLowerCase(), "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png?1595348880"));
             }
         }
         return fullPositionList;

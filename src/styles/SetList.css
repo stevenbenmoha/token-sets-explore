@@ -19,7 +19,7 @@
 
 .unified-style {
    font-family: Graphik, "Times New Roman", serif !important;
-    color: #2D2CE5 !important;
+   color: #2D2CE5 !important;
 }
 
 .graphik-font {
@@ -93,4 +93,9 @@ a {
 .expand-button {
     margin-right: 3% !important;
     margin-bottom: 2% !important;
+}
+
+.error-msg {
+    font-family: Graphik, "Times New Roman", serif !important;
+    color: #e52c48 !important;
 }

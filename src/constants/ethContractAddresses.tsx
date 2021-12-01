@@ -21,5 +21,5 @@ export const streamingFeeModuleAddressTest = '0xE038E59DEEC8657d105B6a3Fb5040b3a
 export const tradeModuleAddressTest = '0xC93c8CDE0eDf4963ea1eea156099B285A945210a';
 export const debtIssuanceModuleAddressTest = '0xe34031E7F4D8Ba4eFab190ce5f4D8451eD1B6A82';
 export const debtIssuanceModuleV2AddressTest = '0xe34031E7F4D8Ba4eFab190ce5f4D8451eD1B6A82';
-export const governanceModuleAddressTest = '0x936Ffda1C892a7c65777b14C1D71fD2C79222099'
+export const governanceModuleAddressTest = '0x936Ffda1C892a7c65777b14C1D71fD2C79222099';
 
