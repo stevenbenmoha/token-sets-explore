@@ -216,9 +216,9 @@ class App extends Component {
 
         const fullPositionList: any[] = [];
 
-        // For each address, fetch the name and logo from a hashmap created from json file of coingecko tokens
         for (const address of positions) {
             if (this.networkSelection === MAINNET) {
+                // For each address, fetch the name and logo from a hashmap created from json file of coingecko tokens
                 const array = tokenList.tokens;
                 const result = new Map<String, String>(array.map(obj => [obj.address.toLowerCase(), obj.name + '^' + obj.logoURI]));
                 let mapEntryPosition = result.get(address.toLowerCase());
@@ -230,6 +230,7 @@ class App extends Component {
                     fullPositionList.push(new Position(name, address.toLowerCase(), logoURI));
                 }
             } else {
+                // Kovan tokens not in json so fetch name with erc20 library, and add generic eth logo
                 const name = await this.setObject.erc20.getTokenNameAsync(address, walletAddress);
                 console.log('Name: ', name);
                 fullPositionList.push(new Position(name, address.toLowerCase(), "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png?1595348880"));
